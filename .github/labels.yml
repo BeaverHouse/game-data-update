@@ -1,0 +1,32 @@
+- name: "Docs"
+  color: 96EFFF
+- name: "Feature"
+  color: FFD0EC
+- name: "Content/Data"
+  color: BFDADC
+- name: "Code clean/refactor"
+  color: 000000
+- name: "Question"
+  color: 5319E7
+
+- name: "Request"
+  color: C5E898
+- name: "Chore"
+  color: FEFAE0
+
+- name: "Security"
+  color: D04848
+- name: "Bug"
+  color: D04848
+
+# Add new labels here
+
+- name: "BA Torment"
+  color: FFFFFF
+- name: "AE Check"
+  color: FFFFFF
+
+- name: "API"
+  color: FFFFFF
+- name: "Data processing"
+  color: FFFFFF

@@ -1,0 +1,32 @@
+labels: []
+body:
+  - type: dropdown
+    id: thread-type
+    attributes:
+      label: Related feature
+      description: "What is your thread related to?"
+      options:
+        - "AE Check data processing"
+        - "BA Torment data processing"
+        - "BA Torment API"
+    validations:
+      required: true
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      description: "What is your thread mainly about?"
+      options:
+        - "Content error"
+        - "Feature request"
+        - "Other"
+    validations:
+      required: true
+
+  - type: textarea
+    id: content
+    attributes:
+      label: "Content"
+      placeholder: "Write your content as detailed as possible."
+    validations:
+      required: true 

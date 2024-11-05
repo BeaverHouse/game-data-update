@@ -1,0 +1,12 @@
+FROM python:3.12-slim
+
+WORKDIR /app
+
+COPY /ba-torment-api /app/ba-torment-api
+COPY /run.py /app/run.py
+COPY ./requirements.txt /app/requirements.txt
+
+RUN pip install -r requirements.txt
+
+EXPOSE 8000
+CMD ["python", "run.py"]

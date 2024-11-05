@@ -1,0 +1,33 @@
+labels: ["Question"]
+body:
+  - type: dropdown
+    id: thread-type
+    attributes:
+      label: Related feature
+      description: "What is your thread related to?"
+      options:
+        - "AE Check data processing"
+        - "BA Torment data processing"
+        - "BA Torment API"
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submission
+      description: Please confirm and check all the following options.
+      options:
+        - label: I already checked that the question is not a duplicate.
+          required: true
+        - label: I already checked that the question is clearly related to this repository.
+          required: true
+    validations:
+      required: true
+
+  - type: textarea
+    id: content
+    attributes:
+      label: "Content"
+      placeholder: "Write your content as detailed as possible."
+    validations:
+      required: true 

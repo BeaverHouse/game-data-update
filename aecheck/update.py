@@ -14,6 +14,7 @@ def update_character(character: Character):
     endpoint_keyword = f'{japanese_name}{constants.SEESAA_SUFFIXS[character.style]}'
     if character.is_original_4star:
         endpoint_keyword += "☆4"
+        character.style = "☆4"
     seesaa_url = f'{constants.SEESAA_BASE_URL}{urllib.parse.quote(endpoint_keyword.encode("euc-jp"))}'
 
     with get_postgres() as conn:
@@ -22,8 +23,9 @@ def update_character(character: Character):
         cur.execute("SELECT COUNT(*) FROM aecheck.characters WHERE character_id LIKE 'char0%'")
         count = cur.fetchone()[0]
 
-        cur.execute(f"SELECT key FROM aecheck.translations WHERE en = '{english_dungeon_name}'")
-        dungeon_id = cur.fetchone()[0]
+        cur.execute(f"SELECT key FROM aecheck.translations WHERE en = '{english_dungeon_name}' AND key LIKE 'dungeon%'")
+        dungeon_id = cur.fetchone()
+        dungeon_id = dungeon_id[0] if dungeon_id else None
         
         if character.alter_character_korean_name:
             cur.execute(f"""

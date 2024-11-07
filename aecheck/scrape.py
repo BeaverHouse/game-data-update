@@ -54,7 +54,7 @@ def get_info_from_aewiki(character: Character):
             update_date = datetime.datetime.strptime(update_datestr, "%Y-%m-%d").strftime("%Y-%m-%d")
 
     character_classes = soup.find("div", {"class": "character-class"}).find_all("td")
-    english_class_name = str(character_classes[7].text).split(" ...▽ ")[0]
+    english_class_name = str(character_classes[7].text).split(" ...▽ ")[0] if character.style != Style.FOUR.value else None
 
     return (
         code,
@@ -107,7 +107,7 @@ def get_dungeon_from_aewiki(style: Style, english_class_name: str):
 
 
 
-def get_info_from_altema(character: Character):
+def get_info_from_altema(character: Character) -> str:
     """
     Scrape Altema page for character and return its Japanese class name
 
@@ -117,6 +117,9 @@ def get_info_from_altema(character: Character):
     Returns:
         str: Japanese name of the character class
     """
+    if character.style == Style.FOUR.value:
+        return None
+    
     def fetch_page_content(url: str) -> str:
         res = requests.get(url)
         if res.status_code != 200:

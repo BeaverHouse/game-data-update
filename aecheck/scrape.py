@@ -48,7 +48,10 @@ def get_info_from_aewiki(character: Character):
     try:
         update_date = datetime.datetime.strptime(update_datestr, "%b %d, %Y").strftime("%Y-%m-%d")
     except ValueError:
-        update_date = datetime.datetime.strptime(update_datestr, "%B %d, %Y").strftime("%Y-%m-%d")
+        try:
+            update_date = datetime.datetime.strptime(update_datestr, "%B %d, %Y").strftime("%Y-%m-%d")
+        except ValueError:
+            update_date = datetime.datetime.strptime(update_datestr, "%Y-%m-%d").strftime("%Y-%m-%d")
 
     character_classes = soup.find("div", {"class": "character-class"}).find_all("td")
     english_class_name = str(character_classes[7].text).split(" ...▽ ")[0]

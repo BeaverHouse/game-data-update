@@ -10,7 +10,8 @@ def compare_arrays(arr1, arr2):
     Compare two arrays and print the result
     """
     if len(arr1) != len(arr2):
-        raise ValueError("Arrays must be of the same length")
+        print(f"Diff at length: {len(arr1)} != {len(arr2)}")
+        return
 
     for i in range(len(arr1)):
         if arr1[i] != arr2[i]:

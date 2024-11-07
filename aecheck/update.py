@@ -64,10 +64,12 @@ def update_character(character: Character):
                     (character_id, personality_id)
                 )
             
-            cur.execute(
-                "INSERT INTO aecheck.translations (key, ko, en, ja) VALUES (%s, %s, %s, %s)",
-                (f'c{code}', korean_name, character.english_name, japanese_name)
-            )
+            cur.execute("SELECT key FROM aecheck.translations WHERE key = %s", (f'c{code}',))   
+            if cur.fetchone() is None:
+                cur.execute(
+                    "INSERT INTO aecheck.translations (key, ko, en, ja) VALUES (%s, %s, %s, %s)",
+                    (f'c{code}', korean_name, character.english_name, japanese_name)
+                )
 
             cur.execute(
                 "INSERT INTO aecheck.translations (key, ko, en, ja) VALUES (%s, %s, %s, %s)",

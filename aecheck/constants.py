@@ -4,6 +4,7 @@ SEESAA_BASE_URL = "https://anothereden.game-info.wiki/d/"
 
 SEESAA_SUFFIXS = {
     "FOUR": "",
+    "☆4": "",
     "NS": "",
     "AS": "(アナザースタイル)",
     "ES": "(エクストラスタイル)",
@@ -11,6 +12,7 @@ SEESAA_SUFFIXS = {
 
 IMG_SUFFIXS = {
     "FOUR": "",
+    "☆4": "",
     "NS": "_rank5",
     "AS": "_s2_rank5",
     "ES": "_s3_rank5",
@@ -18,6 +20,7 @@ IMG_SUFFIXS = {
 
 AEWIKI_STYLE_SUFFIXS = {
     "FOUR": "",
+    "☆4": "",
     "NS": "",
     "AS": "_(Another_Style)",
     "ES": "_(Extra_Style)",

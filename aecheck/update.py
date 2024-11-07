@@ -14,6 +14,7 @@ def update_character(character: Character):
     endpoint_keyword = f'{japanese_name}{constants.SEESAA_SUFFIXS[character.style]}'
     if character.is_original_4star:
         endpoint_keyword += "☆4"
+        character.style = "☆4"
     seesaa_url = f'{constants.SEESAA_BASE_URL}{urllib.parse.quote(endpoint_keyword.encode("euc-jp"))}'
 
     with get_postgres() as conn:
@@ -22,8 +23,9 @@ def update_character(character: Character):
         cur.execute("SELECT COUNT(*) FROM aecheck.characters WHERE character_id LIKE 'char0%'")
         count = cur.fetchone()[0]
 
-        cur.execute(f"SELECT key FROM aecheck.translations WHERE en = '{english_dungeon_name}'")
-        dungeon_id = cur.fetchone()[0]
+        cur.execute(f"SELECT key FROM aecheck.translations WHERE en = '{english_dungeon_name}' AND key LIKE 'dungeon%'")
+        dungeon_id = cur.fetchone()
+        dungeon_id = dungeon_id[0] if dungeon_id else None
         
         if character.alter_character_korean_name:
             cur.execute(f"""
@@ -62,10 +64,12 @@ def update_character(character: Character):
                     (character_id, personality_id)
                 )
             
-            cur.execute(
-                "INSERT INTO aecheck.translations (key, ko, en, ja) VALUES (%s, %s, %s, %s)",
-                (f'c{code}', korean_name, character.english_name, japanese_name)
-            )
+            cur.execute("SELECT key FROM aecheck.translations WHERE key = %s", (f'c{code}',))   
+            if cur.fetchone() is None:
+                cur.execute(
+                    "INSERT INTO aecheck.translations (key, ko, en, ja) VALUES (%s, %s, %s, %s)",
+                    (f'c{code}', korean_name, character.english_name, japanese_name)
+                )
 
             cur.execute(
                 "INSERT INTO aecheck.translations (key, ko, en, ja) VALUES (%s, %s, %s, %s)",
@@ -119,11 +123,23 @@ def update_character(character: Character):
 
 if __name__ == "__main__":
     update_character(Character(
-        english_name="Tsubame",
-        korean_class_name="펠리스 로드",
+        english_name="Rufus",
+        korean_class_name=None,
+        style=Style.FOUR.value,
+        altema_url="https://altema.jp/anaden/chara/67",
+        is_original_4star=True
+    ))
+    update_character(Character(
+        english_name="Rufus",
+        korean_class_name="블레이즈 히어로",
+        style=Style.AS.value,
+        altema_url="https://altema.jp/anaden/chara/1114",
+    ))
+    update_character(Character(
+        english_name="Shanie",
+        korean_class_name="아크 나이트",
         style=Style.NS.value,
-        altema_url="https://altema.jp/anaden/chara/1112",
-        is_alter=True,
-        alter_character_korean_name="츠바메",
-        max_manifest=0
+        max_manifest=2,
+        alter_character_korean_name="가시나무 저주의 여인 셰이네",
+        altema_url="https://altema.jp/anaden/chara/180",
     ))

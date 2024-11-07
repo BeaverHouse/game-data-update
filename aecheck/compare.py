@@ -10,7 +10,8 @@ def compare_arrays(arr1, arr2):
     Compare two arrays and print the result
     """
     if len(arr1) != len(arr2):
-        raise ValueError("Arrays must be of the same length")
+        print(f"Diff at length: {len(arr1)} != {len(arr2)}")
+        return
 
     for i in range(len(arr1)):
         if arr1[i] != arr2[i]:
@@ -26,13 +27,15 @@ def compare_character(character: Character):
     endpoint_keyword = f'{japanese_name}{constants.SEESAA_SUFFIXS[character.style]}'
     if character.is_original_4star:
         endpoint_keyword += "☆4"
+        character.style = "☆4"
     seesaa_url = f'{constants.SEESAA_BASE_URL}{urllib.parse.quote(endpoint_keyword.encode("euc-jp"))}'
 
     with get_postgres() as conn:
         cur = conn.cursor()
 
-        cur.execute(f"SELECT key FROM aecheck.translations WHERE en = '{english_dungeon_name}'")
-        dungeon_id = cur.fetchone()[0]
+        cur.execute(f"SELECT key FROM aecheck.translations WHERE en = '{english_dungeon_name}' AND key LIKE 'dungeon%'")
+        dungeon_id = cur.fetchone()
+        dungeon_id = dungeon_id[0] if dungeon_id else None
         
         if character.alter_character_korean_name:
             cur.execute(f"""
@@ -65,8 +68,10 @@ def compare_character(character: Character):
             )
 
             cur.execute("SELECT dungeon_id FROM aecheck.dungeon_mappings WHERE character_id = %s", (character_id,))
+            db_dungeon_id = cur.fetchone()
+            db_dungeon_id = db_dungeon_id[0] if db_dungeon_id else None
             compare_arrays(
-                cur.fetchone(),
+                (db_dungeon_id, ),
                 (dungeon_id, )
             )
 
@@ -83,18 +88,36 @@ def compare_character(character: Character):
             )
 
             cur.execute("SELECT ko, en, ja FROM aecheck.translations WHERE key = %s", (f'book.{character_id}',))
+            db_class_name = cur.fetchone()
+            if db_class_name is None: 
+                db_class_name = (None, None, None)
             compare_arrays(
-                cur.fetchone(),
+                db_class_name,
                 (character.korean_class_name, english_class_name, japanese_class_name)
             )
 
 if __name__ == "__main__":
-    # compare_character(Character(
-    #     english_name="Sesta",
-    #     korean_class_name="바나르간드",
-    #     style=Style.AS.value,
-    #     altema_url="https://altema.jp/anaden/chara/1110",
-    # ))
+    compare_character(Character(
+        english_name="Rufus",
+        korean_class_name=None,
+        style=Style.FOUR.value,
+        altema_url="https://altema.jp/anaden/chara/67",
+        is_original_4star=True
+    ))
+    compare_character(Character(
+        english_name="Rufus",
+        korean_class_name="블레이즈 히어로",
+        style=Style.AS.value,
+        altema_url="https://altema.jp/anaden/chara/1114",
+    ))
+    compare_character(Character(
+        english_name="Shanie",
+        korean_class_name="아크 나이트",
+        style=Style.NS.value,
+        max_manifest=2,
+        alter_character_korean_name="가시나무 저주의 여인 셰이네",
+        altema_url="https://altema.jp/anaden/chara/180",
+    ))
     compare_character(Character(
         english_name="Tsubame",
         korean_class_name="펠리스 로드",

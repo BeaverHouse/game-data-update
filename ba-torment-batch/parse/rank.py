@@ -21,7 +21,7 @@ def get_rank_season_normal(season: str) -> Tuple[int, pl.DataFrame]:
     """
     Get "Total Assault (총력전)" rank data
     """
-    url = f"{constants.DATA_BASE_URL}/RaidRankData/{season}/FullData_Original.csv"
+    url = f"{constants.DATA_BASE_URL}/RaidRankData/{season}/TeamDataDetail_Original.csv"
     
     try:
         df = pl.read_csv(url)

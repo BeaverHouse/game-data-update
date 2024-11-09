@@ -24,11 +24,10 @@ def get_rank_season_normal(season: str) -> Tuple[int, pl.DataFrame]:
     url = f"{constants.DATA_BASE_URL}/RaidRankData/{season}/TeamDataDetail_Original.csv"
     
     try:
-        df = pl.read_csv(url)
+        df = pl.read_csv(url, schema=pl.Schema({"Rank": pl.Int64, "BestRankingPoint": pl.Int64, "AccountId": pl.Int64}), truncate_ragged_lines=True)
         target_boss = 0
         return target_boss, \
-            df.select(pl.col("AccountId", "Rank", "BestRankingPoint")) \
-              .rename({"AccountId": "USER_ID", "Rank": "FINAL_RANK", "BestRankingPoint": "SCORE"}) \
+            df.rename({"AccountId": "USER_ID", "Rank": "FINAL_RANK", "BestRankingPoint": "SCORE"}) \
               .unique(keep="first") \
               .filter(pl.col("SCORE") > constants.TORMENT_MIN_SCORE) \
               .filter(pl.col("FINAL_RANK") <= constants.PLATINUM_CUT) \

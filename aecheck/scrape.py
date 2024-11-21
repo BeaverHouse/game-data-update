@@ -24,7 +24,7 @@ def get_info_from_aewiki(character: Character):
     soup = bs4.BeautifulSoup(res.text, 'lxml')
 
     general_datas = soup.find("article", {"title": "General Data"}).find_all("td")
-    is_awaken = "Stellar Awakened" in str(general_datas[0].text)
+    is_awaken = "Stellar Awakened" in str(general_datas[0].text) and not character.is_original_4star
     light_shadow = str(general_datas[5].text).lower().strip()
     
     obtain = str(general_datas[6].text).strip()
@@ -51,7 +51,10 @@ def get_info_from_aewiki(character: Character):
         try:
             update_date = datetime.datetime.strptime(update_datestr, "%B %d, %Y").strftime("%Y-%m-%d")
         except ValueError:
-            update_date = datetime.datetime.strptime(update_datestr, "%Y-%m-%d").strftime("%Y-%m-%d")
+            try:
+                update_date = datetime.datetime.strptime(update_datestr, "%b %d %Y").strftime("%Y-%m-%d")
+            except ValueError:
+                update_date = datetime.datetime.strptime(update_datestr, "%Y-%m-%d").strftime("%Y-%m-%d")
 
     character_classes = soup.find("div", {"class": "character-class"}).find_all("td")
     english_class_name = str(character_classes[7].text).split(" ...▽ ")[0] if character.style != Style.FOUR.value else None

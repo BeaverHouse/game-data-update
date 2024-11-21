@@ -24,7 +24,7 @@ def get_info_from_aewiki(character: Character):
     soup = bs4.BeautifulSoup(res.text, 'lxml')
 
     general_datas = soup.find("article", {"title": "General Data"}).find_all("td")
-    is_awaken = "Stellar Awakened" in str(general_datas[0].text)
+    is_awaken = "Stellar Awakened" in str(general_datas[0].text) and not character.is_original_4star
     light_shadow = str(general_datas[5].text).lower().strip()
     
     obtain = str(general_datas[6].text).strip()

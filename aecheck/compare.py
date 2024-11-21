@@ -98,32 +98,31 @@ def compare_character(character: Character):
 
 if __name__ == "__main__":
     compare_character(Character(
-        english_name="Rufus",
+        english_name="Izuna",
         korean_class_name=None,
         style=Style.FOUR.value,
-        altema_url="https://altema.jp/anaden/chara/67",
+        altema_url="https://altema.jp/anaden/chara/1116",
         is_original_4star=True
     ))
+    # compare_character(Character(
+    #     english_name="Rufus",
+    #     korean_class_name="블레이즈 히어로",
+    #     style=Style.AS.value,
+    #     altema_url="https://altema.jp/anaden/chara/1114",
+    # ))
     compare_character(Character(
-        english_name="Rufus",
-        korean_class_name="블레이즈 히어로",
-        style=Style.AS.value,
-        altema_url="https://altema.jp/anaden/chara/1114",
-    ))
-    compare_character(Character(
-        english_name="Shanie",
-        korean_class_name="아크 나이트",
+        english_name="Mighty",
+        korean_class_name="아쿠아 룰러",
         style=Style.NS.value,
         max_manifest=2,
-        alter_character_korean_name="가시나무 저주의 여인 셰이네",
-        altema_url="https://altema.jp/anaden/chara/180",
+        altema_url="https://altema.jp/anaden/chara/3",
     ))
     compare_character(Character(
-        english_name="Tsubame",
-        korean_class_name="펠리스 로드",
+        english_name="Izuna",
+        korean_class_name="카라스텐구",
         style=Style.NS.value,
-        altema_url="https://altema.jp/anaden/chara/1112",
-        is_alter=True,
-        alter_character_korean_name="츠바메",
+        altema_url="https://altema.jp/anaden/chara/1116",
+        # is_alter=True,
+        # alter_character_korean_name="츠바메",
         max_manifest=0
     ))

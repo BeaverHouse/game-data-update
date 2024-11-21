@@ -72,10 +72,11 @@ def update_character(character: Character):
                     (f'c{code}', korean_name, character.english_name, japanese_name)
                 )
 
-            cur.execute(
-                "INSERT INTO aecheck.translations (key, ko, en, ja) VALUES (%s, %s, %s, %s)",
-                (f'book.{character_id}', character.korean_class_name, english_class_name, japanese_class_name)
-            )
+            if not character.is_original_4star:
+                cur.execute(
+                    "INSERT INTO aecheck.translations (key, ko, en, ja) VALUES (%s, %s, %s, %s)",
+                    (f'book.{character_id}', character.korean_class_name, english_class_name, japanese_class_name)
+                )
         else:
             character_id = character_id[0]
 

@@ -3,6 +3,7 @@ from models import Character, Style
 from scrape import get_info_from_aewiki, get_info_from_altema, get_dungeon_from_aewiki
 import constants
 from image import upload_image
+import sys
 
 import urllib.parse
 
@@ -59,7 +60,11 @@ def update_character(character: Character):
 
             for personality in personalities:
                 cur.execute(f"SELECT key FROM aecheck.translations WHERE en = '{personality}'")
-                personality_id = cur.fetchone()[0]
+                data = cur.fetchone()
+                if data is None:
+                    print(f"Personality {personality} not found")
+                    sys.exit(1)
+                personality_id = data[0]
                 cur.execute(
                     "INSERT INTO aecheck.personality_mappings (character_id, personality_id) VALUES (%s, %s)",
                     (character_id, personality_id)
@@ -125,25 +130,58 @@ def update_character(character: Character):
 
 if __name__ == "__main__":
     update_character(Character(
-        english_name="Izuna",
+        english_name="Ryza",
         korean_class_name=None,
         style=Style.FOUR.value,
-        altema_url="https://altema.jp/anaden/chara/1116",
+        altema_url="https://altema.jp/anaden/chara/1118",
         is_original_4star=True
     ))
     update_character(Character(
-        english_name="Mighty",
-        korean_class_name="아쿠아 룰러",
-        style=Style.NS.value,
-        max_manifest=2,
-        altema_url="https://altema.jp/anaden/chara/3",
+        english_name="Klaudia",
+        korean_class_name=None,
+        style=Style.FOUR.value,
+        altema_url="https://altema.jp/anaden/chara/1119",
+        is_original_4star=True
     ))
     update_character(Character(
-        english_name="Izuna",
-        korean_class_name="카라스텐구",
+        english_name="Empel",
+        korean_class_name=None,
+        style=Style.FOUR.value,
+        altema_url="https://altema.jp/anaden/chara/1120",
+        is_original_4star=True
+    ))
+    update_character(Character(
+        english_name="Ryza",
+        korean_class_name="기예 연금술사",
         style=Style.NS.value,
-        altema_url="https://altema.jp/anaden/chara/1116",
-        # is_alter=True,
-        # alter_character_korean_name="츠바메",
+        altema_url="https://altema.jp/anaden/chara/1118",
+        max_manifest=0
+    ))
+    update_character(Character(
+        english_name="Klaudia",
+        korean_class_name="정숙한 연주자",
+        style=Style.NS.value,
+        altema_url="https://altema.jp/anaden/chara/1119",
+        max_manifest=0
+    ))
+    update_character(Character(
+        english_name="Empel",
+        korean_class_name="유랑 연금술사",
+        style=Style.NS.value,
+        altema_url="https://altema.jp/anaden/chara/1120",
+        max_manifest=0
+    ))
+    update_character(Character(
+        english_name="Id",
+        korean_class_name=None,
+        style=Style.FOUR.value,
+        altema_url="https://altema.jp/anaden/chara/1121",
+        is_original_4star=True
+    ))
+    update_character(Character(
+        english_name="Id",
+        korean_class_name="니르바나",
+        style=Style.NS.value,
+        altema_url="https://altema.jp/anaden/chara/1121",
         max_manifest=0
     ))

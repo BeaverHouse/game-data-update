@@ -95,8 +95,8 @@ def upload_party_data(season: str) -> dict:
         max_partys = max(max_partys, len(party_data.keys()))
 
     write_output(season, "total", data={
-        "filters": filters,
-        "assist_filters": assist_filters,
+        "filters": dict(sorted(filters.items())),
+        "assist_filters": dict(sorted(assist_filters.items())),
         "min_partys": min_partys,
         "max_partys": max_partys,
         "parties": scores

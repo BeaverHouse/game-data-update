@@ -1,8 +1,6 @@
 import json
-import os
 import ast
 import collections
-import requests
 
 def read_input(season: str):
     with open(f"ba-torment-manual/input/{season}.json", "r") as file:
@@ -18,9 +16,9 @@ def parse_party_data(season: str):
 
     output_data = []
     for data in datas:
-        user_id = -1
         torment_rank = data['r']
         final_rank = data['r'] if season.startswith("S") else -1
+        user_id = -torment_rank
         score = data['s']
         party_data = get_party_detail(data['t'])
 
@@ -145,7 +143,7 @@ def parse_filters(filters: dict[str, list[int]], clear_count: int) -> dict:
     return collections.OrderedDict(collections.Counter(more_than_1per).most_common())
 
 if __name__ == "__main__":
-    season = "S70"  
+    season = "S72"  
     upload_party_data(season)
     upload_summary(season)
 

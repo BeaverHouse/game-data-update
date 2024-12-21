@@ -25,6 +25,7 @@ def get_info_from_aewiki(character: Character):
 
     general_datas = soup.find("article", {"title": "General Data"}).find_all("td")
     is_awaken = "Stellar Awakened" in str(general_datas[0].text) and not character.is_original_4star
+    element = str(general_datas[1].text).strip()
     light_shadow = "light" if str(general_datas[5].text).lower().strip().startswith("light") else "shadow"
     
     obtain = str(general_datas[6].text).strip()
@@ -38,6 +39,8 @@ def get_info_from_aewiki(character: Character):
         lambda x: x.text.strip(),
         general_datas[7].find_all("a")
     ))
+    if element == "None":
+        personalities.append("None")
 
     other_datas = soup.find("article", {"title": "Other Data"}).find_all("td")
     code = int(str(other_datas[1].text).strip())

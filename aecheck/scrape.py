@@ -48,16 +48,23 @@ def get_info_from_aewiki(character: Character):
     korean_name = str(other_datas[3].text).split("(")[0].strip()
     date_index = 9 if character.is_alter else 6
     update_datestr = str(other_datas[date_index].text).split(" / ")[1].strip() # Oct 10, 2024 or October 10, 2024
-    try:
-        update_date = datetime.datetime.strptime(update_datestr, "%b %d, %Y").strftime("%Y-%m-%d")
-    except ValueError:
+
+    date_formats = [
+        "%b %d, %Y",
+        "%B %d, %Y", 
+        "%d %b, %Y", 
+        "%b %d %Y",
+        "%Y-%m-%d"
+    ]
+
+    for date_format in date_formats:
         try:
-            update_date = datetime.datetime.strptime(update_datestr, "%B %d, %Y").strftime("%Y-%m-%d")
+            update_date = datetime.datetime.strptime(update_datestr, date_format).strftime("%Y-%m-%d")
+            break
         except ValueError:
-            try:
-                update_date = datetime.datetime.strptime(update_datestr, "%b %d %Y").strftime("%Y-%m-%d")
-            except ValueError:
-                update_date = datetime.datetime.strptime(update_datestr, "%Y-%m-%d").strftime("%Y-%m-%d")
+            continue
+    else:
+        raise ValueError(f"Cannot parse update date: {update_datestr}")
 
     character_classes = soup.find("div", {"class": "character-class"}).find_all("td")
     english_class_name = str(character_classes[7].text).split(" ...▽ ")[0] if character.style != Style.FOUR.value else None

@@ -25,6 +25,7 @@ def get_info_from_aewiki(character: Character):
 
     general_datas = soup.find("article", {"title": "General Data"}).find_all("td")
     is_awaken = "Stellar Awakened" in str(general_datas[0].text) and not character.is_original_4star
+    element = str(general_datas[1].text).strip()
     light_shadow = "light" if str(general_datas[5].text).lower().strip().startswith("light") else "shadow"
     
     obtain = str(general_datas[6].text).strip()
@@ -38,6 +39,8 @@ def get_info_from_aewiki(character: Character):
         lambda x: x.text.strip(),
         general_datas[7].find_all("a")
     ))
+    if element == "None":
+        personalities.append("None")
 
     other_datas = soup.find("article", {"title": "Other Data"}).find_all("td")
     code = int(str(other_datas[1].text).strip())
@@ -45,16 +48,23 @@ def get_info_from_aewiki(character: Character):
     korean_name = str(other_datas[3].text).split("(")[0].strip()
     date_index = 9 if character.is_alter else 6
     update_datestr = str(other_datas[date_index].text).split(" / ")[1].strip() # Oct 10, 2024 or October 10, 2024
-    try:
-        update_date = datetime.datetime.strptime(update_datestr, "%b %d, %Y").strftime("%Y-%m-%d")
-    except ValueError:
+
+    date_formats = [
+        "%b %d, %Y",
+        "%B %d, %Y", 
+        "%d %b, %Y", 
+        "%b %d %Y",
+        "%Y-%m-%d"
+    ]
+
+    for date_format in date_formats:
         try:
-            update_date = datetime.datetime.strptime(update_datestr, "%B %d, %Y").strftime("%Y-%m-%d")
+            update_date = datetime.datetime.strptime(update_datestr, date_format).strftime("%Y-%m-%d")
+            break
         except ValueError:
-            try:
-                update_date = datetime.datetime.strptime(update_datestr, "%b %d %Y").strftime("%Y-%m-%d")
-            except ValueError:
-                update_date = datetime.datetime.strptime(update_datestr, "%Y-%m-%d").strftime("%Y-%m-%d")
+            continue
+    else:
+        raise ValueError(f"Cannot parse update date: {update_datestr}")
 
     character_classes = soup.find("div", {"class": "character-class"}).find_all("td")
     english_class_name = str(character_classes[7].text).split(" ...▽ ")[0] if character.style != Style.FOUR.value else None

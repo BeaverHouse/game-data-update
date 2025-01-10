@@ -98,58 +98,10 @@ def compare_character(character: Character):
 
 if __name__ == "__main__":
     compare_character(Character(
-        english_name="Ryza",
-        korean_class_name=None,
-        style=Style.FOUR.value,
-        altema_url="https://altema.jp/anaden/chara/1118",
-        is_original_4star=True
-    ))
-    compare_character(Character(
-        english_name="Klaudia",
-        korean_class_name=None,
-        style=Style.FOUR.value,
-        altema_url="https://altema.jp/anaden/chara/1119",
-        is_original_4star=True
-    ))
-    compare_character(Character(
-        english_name="Empel",
-        korean_class_name=None,
-        style=Style.FOUR.value,
-        altema_url="https://altema.jp/anaden/chara/1120",
-        is_original_4star=True
-    ))
-    compare_character(Character(
-        english_name="Ryza",
-        korean_class_name="기예 연금술사",
+        english_name="Lokido",
+        korean_class_name="테아트랄 베트",
         style=Style.NS.value,
-        altema_url="https://altema.jp/anaden/chara/1118",
-        max_manifest=0
-    ))
-    compare_character(Character(
-        english_name="Klaudia",
-        korean_class_name="정숙한 연주자",
-        style=Style.NS.value,
-        altema_url="https://altema.jp/anaden/chara/1119",
-        max_manifest=0
-    ))
-    compare_character(Character(
-        english_name="Empel",
-        korean_class_name="유랑 연금술사",
-        style=Style.NS.value,
-        altema_url="https://altema.jp/anaden/chara/1120",
-        max_manifest=0
-    ))
-    compare_character(Character(
-        english_name="Id",
-        korean_class_name=None,
-        style=Style.FOUR.value,
-        altema_url="https://altema.jp/anaden/chara/1121",
-        is_original_4star=True
-    ))
-    compare_character(Character(
-        english_name="Id",
-        korean_class_name="니르바나",
-        style=Style.NS.value,
-        altema_url="https://altema.jp/anaden/chara/1121",
-        max_manifest=0
+        is_alter=True,
+        alter_character_korean_name="로키드",
+        altema_url="https://altema.jp/anaden/chara/1130",
     ))

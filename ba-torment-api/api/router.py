@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException
 import os
+import requests
 
 from fastapi.responses import RedirectResponse
 
@@ -98,9 +99,21 @@ async def register_link(link_info: YoutubeLinkInfo):
 
 @api_router.get("/v2/party/{raid_id}")
 async def redirect_to_party_file(raid_id: str):
-    return RedirectResponse(url=f"{file_url}/v2/party/{raid_id}.json")
+    url = f"{file_url}/v2/party/{raid_id}.json"
+    check_response = requests.head(url)
+    if check_response.status_code == 200:
+        return RedirectResponse(url=url)
+    else:
+        raise HTTPException(status_code=404, detail=f"404 error: {raid_id}")
+
+
 
 
 @api_router.get("/v2/summary/{raid_id}")
 async def redirect_to_summary_file(raid_id: str):
-    return RedirectResponse(url=f"{file_url}/v2/summary/{raid_id}.json")
+    url = f"{file_url}/v2/summary/{raid_id}.json"
+    check_response = requests.head(url)
+    if check_response.status_code == 200:
+        return RedirectResponse(url=url)
+    else:
+        raise HTTPException(status_code=404, detail=f"404 error: {raid_id}")

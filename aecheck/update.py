@@ -116,8 +116,12 @@ def update_character(character: Character):
 
             cur.execute("DELETE FROM aecheck.personality_mappings WHERE character_id = %s", (character_id,))
             for personality in personalities:
-                cur.execute(f"SELECT key FROM aecheck.translations WHERE en = '{personality}'")
-                personality_id = cur.fetchone()[0]
+                cur.execute(f"SELECT key FROM aecheck.translations WHERE en = '{personality.replace('*', '')}'")
+                data = cur.fetchone()
+                if data is None:
+                    print(f"Personality {personality} not found")
+                    sys.exit(1)
+                personality_id = data[0]
                 cur.execute(
                     "INSERT INTO aecheck.personality_mappings (character_id, personality_id) VALUES (%s, %s)",
                     (character_id, personality_id)

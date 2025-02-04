@@ -1,10 +1,16 @@
 from fastapi import APIRouter, HTTPException
+import os
+
+from fastapi.responses import RedirectResponse
 
 from ..utils.database import get_postgres
 from ..utils.youtube import parse_youtube_embed_link
 from ..models import RaidInfo, YoutubeLinkInfo
+from ..log.logger import logger
 
 api_router = APIRouter(tags=["BA torment"])
+
+file_url = os.getenv("BATORMENT_DOWNLOAD_URL")
 
 @api_router.get("/")
 async def root():
@@ -25,7 +31,19 @@ async def get_ranks() -> list[RaidInfo]:
     table_name = "ba_torment.raids"
     with get_postgres() as conn:
         cur = conn.cursor()
-        cur.execute(f"SELECT raid_id, name FROM {table_name} WHERE status = 'COMPLETE' ORDER BY created_at ASC")
+        cur.execute(f"SELECT raid_id, name FROM {table_name} WHERE status = 'COMPLETE' and is_lunatic = false ORDER BY created_at ASC")
+        ranks = cur.fetchall()
+
+    logger.warn(f"v1 raid API called")
+    return list(map(lambda x: RaidInfo(id=x[0], description=x[1]), ranks))
+
+@api_router.get("/v2/raids")
+async def get_v2_ranks() -> list[RaidInfo]:
+    table_name = "ba_torment.raids"
+    with get_postgres() as conn:
+
+        cur = conn.cursor()
+        cur.execute(f"SELECT raid_id, name FROM {table_name} WHERE status = 'COMPLETE' and is_lunatic = true ORDER BY created_at ASC")
         ranks = cur.fetchall()
 
     return list(map(lambda x: RaidInfo(id=x[0], description=x[1]), ranks))
@@ -35,18 +53,18 @@ async def register_rank(raid_info: RaidInfo):
     table_name = "ba_torment.raids"
     with get_postgres() as conn:
         cur = conn.cursor()
-        cur.execute(f"INSERT INTO {table_name} (raid_id, name, status) VALUES (:1, :2, 'PENDING')", (raid_info.id, raid_info.description))
+        cur.execute(f"INSERT INTO {table_name} (raid_id, name, status, is_lunatic) VALUES (:1, :2, 'PENDING', true)", (raid_info.id, raid_info.description))
         conn.commit()
 
-@api_router.get("/links/{season}", response_model=list[YoutubeLinkInfo], response_model_exclude_none=True)
-async def get_youtube_links(season: str) -> list[YoutubeLinkInfo]: 
+@api_router.get("/links/{raid_id}", response_model=list[YoutubeLinkInfo], response_model_exclude_none=True)
+async def get_youtube_links(raid_id: str) -> list[YoutubeLinkInfo]: 
     table_name = "ba_torment.named_users"
     with get_postgres() as conn:
         cur = conn.cursor()
         cur.execute(f"""
             SELECT user_id, description, youtube_url, score 
             FROM {table_name}
-            WHERE raid_id = '{season}' OR raid_id IS NULL
+            WHERE raid_id = '{raid_id}'
             ORDER BY score DESC NULLS LAST
         """)
         links = cur.fetchall()
@@ -77,3 +95,12 @@ async def register_link(link_info: YoutubeLinkInfo):
             conn.commit()
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/v2/party/{raid_id}")
+async def redirect_to_party_file(raid_id: str):
+    return RedirectResponse(url=f"{file_url}/v2/party/{raid_id}.json")
+
+
+@api_router.get("/v2/summary/{raid_id}")
+async def redirect_to_summary_file(raid_id: str):
+    return RedirectResponse(url=f"{file_url}/v2/summary/{raid_id}.json")

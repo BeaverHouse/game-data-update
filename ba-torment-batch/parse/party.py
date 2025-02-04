@@ -6,15 +6,15 @@ import os
 from parse.rank import get_rank_season
 import constants
 
-def get_party_info(season: str) -> list[dict]:
+def get_party_info(season: str, target_boss: int) -> list[dict]:
     """
     Get party data
 
     Args:
         season (str): season starts with "S" or "3S".
-        develop (bool): parameter that indicates if the data is for development or not.
+        target_boss (int): target boss number if it's Grand Assault (대결전).
     """
-    target_boss, rank_df = get_rank_season(season)
+    rank_df = get_rank_season(season, target_boss)
 
     if target_boss == 0:
         return get_party_info_normal(season, rank_df)
@@ -26,6 +26,7 @@ def get_party_info_normal(season: str, rank_df: pl.DataFrame):
 
     party_df = get_party_dataframe(season, url)
     merged_df = rank_df \
+      .with_columns(pl.col("SCORE").map_elements(get_level).alias("LEVEL")) \
       .join(party_df, on="USER_ID", how="left") \
       .filter(pl.col("PARTY_DATA").is_not_null()) \
       .with_columns(pl.col("FINAL_RANK").alias("TORMENT_RANK")) \
@@ -41,6 +42,7 @@ def get_party_info_triple(season: str, target_boss: int, rank_df: pl.DataFrame):
     party_df = get_party_dataframe(season, url)
     merged_df = rank_df \
       .with_row_index(offset=1) \
+      .with_columns(pl.col("SCORE").map_elements(get_level).alias("LEVEL")) \
       .join(party_df, on="USER_ID", how="left") \
       .rename({"index": "TORMENT_RANK"}) \
       .unique(subset="USER_ID", keep="first") \
@@ -117,3 +119,11 @@ def get_reduced_number(student_id: int, star: int, weapon: int, is_assist: int) 
         is_assist (int): whether the student is an assist or not.
     """
     return student_id * 1000 + star * 100 + weapon * 10 + is_assist 
+
+def get_level(score: int) -> str:
+    if score > constants.LUNATIC_MIN_SCORE:
+        return "L" # Lunatic
+    elif score > constants.TORMENT_MIN_SCORE:
+        return "T" # Torment
+    else:
+        return "I" # Insane

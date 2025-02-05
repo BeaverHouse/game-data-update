@@ -26,7 +26,7 @@ def get_party_info_normal(season: str, rank_df: pl.DataFrame):
 
     party_df = get_party_dataframe(season, url)
     merged_df = rank_df \
-      .with_columns(pl.col("SCORE").map_elements(get_level).alias("LEVEL")) \
+      .with_columns(pl.col("SCORE").map_elements(get_level, return_dtype=pl.Utf8).alias("LEVEL")) \
       .join(party_df, on="USER_ID", how="left") \
       .filter(pl.col("PARTY_DATA").is_not_null()) \
       .with_columns(pl.col("FINAL_RANK").alias("TORMENT_RANK")) \
@@ -42,7 +42,7 @@ def get_party_info_triple(season: str, target_boss: int, rank_df: pl.DataFrame):
     party_df = get_party_dataframe(season, url)
     merged_df = rank_df \
       .with_row_index(offset=1) \
-      .with_columns(pl.col("SCORE").map_elements(get_level).alias("LEVEL")) \
+      .with_columns(pl.col("SCORE").map_elements(get_level, return_dtype=pl.Utf8).alias("LEVEL")) \
       .join(party_df, on="USER_ID", how="left") \
       .rename({"index": "TORMENT_RANK"}) \
       .unique(subset="USER_ID", keep="first") \

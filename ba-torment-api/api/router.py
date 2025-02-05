@@ -44,10 +44,10 @@ async def get_v2_ranks() -> list[RaidInfo]:
     with get_postgres() as conn:
 
         cur = conn.cursor()
-        cur.execute(f"SELECT raid_id, name FROM {table_name} WHERE status = 'COMPLETE' and is_lunatic = true ORDER BY created_at ASC")
+        cur.execute(f"SELECT raid_id, name, is_lunatic FROM {table_name} WHERE status = 'COMPLETE' and is_lunatic = true ORDER BY created_at ASC")
         ranks = cur.fetchall()
 
-    return list(map(lambda x: RaidInfo(id=x[0], description=x[1]), ranks))
+    return list(map(lambda x: RaidInfo(id=x[0], description=x[1], is_lunatic=x[2]), ranks))
 
 @api_router.post("/raid")
 async def register_rank(raid_info: RaidInfo):

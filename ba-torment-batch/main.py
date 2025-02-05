@@ -21,7 +21,7 @@ def ba_data_batch() -> None:
             season, target_boss = raid_id.split("-") if "-" in raid_id else (raid_id, 0)
             upload_party_data(season, target_boss)
             upload_summary(season, target_boss)
-            cur.execute(f"UPDATE {raid_table} SET status = 'COMPLETE', updated_at = CURRENT_TIMESTAMP WHERE raid_id = '{season}'")
+            cur.execute(f"UPDATE {raid_table} SET status = 'COMPLETE', updated_at = CURRENT_TIMESTAMP WHERE raid_id = '{raid_id}'")
             conn.commit()
 
             print(f"Updated {season}")

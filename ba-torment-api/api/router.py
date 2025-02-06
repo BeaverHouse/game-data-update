@@ -81,7 +81,7 @@ async def get_youtube_links(raid_id: str) -> list[YoutubeLinkInfo]:
 async def register_link(link_info: YoutubeLinkInfo):
     if link_info.youtube_url.startswith("https://www.youtube.com/@"):
         youtube_link = link_info.youtube_url
-    elif link_info.score < 31076000:
+    elif link_info.score < 25000000:
         raise HTTPException(status_code=400, detail="Invalid link")
     else:
         youtube_link = parse_youtube_embed_link(link_info.youtube_url)

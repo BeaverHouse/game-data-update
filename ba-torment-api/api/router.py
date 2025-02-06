@@ -46,7 +46,7 @@ async def get_v2_ranks() -> list[RaidInfo]:
         cur.execute(f"SELECT raid_id, name, top_level FROM {table_name} WHERE status = 'COMPLETE' ORDER BY created_at ASC")
         ranks = cur.fetchall()
 
-    return list(map(lambda x: RaidInfo(id=x[0], description=x[1], is_lunatic=x[2]), ranks))
+    return list(map(lambda x: RaidInfo(id=x[0], description=x[1], top_level=x[2]), ranks))
 
 @api_router.post("/raid")
 async def register_rank(raid_info: RaidInfo):

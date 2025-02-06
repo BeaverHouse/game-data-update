@@ -70,6 +70,7 @@ async def get_youtube_links(raid_id: str) -> list[YoutubeLinkInfo]:
             SELECT user_id, description, youtube_url, score 
             FROM {table_name}
             WHERE raid_id = '{raid_id}'
+            OR raid_id IS NULL
             ORDER BY score DESC NULLS LAST
         """)
         links = cur.fetchall()

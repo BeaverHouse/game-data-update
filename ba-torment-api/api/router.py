@@ -109,7 +109,7 @@ async def redirect_to_party_file(raid_id: str):
     if not raid_id.isalnum():
         raise HTTPException(status_code=400, detail="Invalid raid_id")
     path = f"/v2/party/{raid_id}.json"
-    if any(path.startswith(valid_path) for valid_path in valid_paths):
+    if path in valid_paths:
         url = f"{file_url}{path}"
         check_response = requests.head(url)
         if check_response.status_code == 200:
@@ -125,7 +125,7 @@ async def redirect_to_summary_file(raid_id: str):
     if not raid_id.isalnum():
         raise HTTPException(status_code=400, detail="Invalid raid_id")
     path = f"/v2/summary/{raid_id}.json"
-    if any(path.startswith(valid_path) for valid_path in valid_paths):
+    if path in valid_paths:
         url = f"{file_url}{path}"
         check_response = requests.head(url)
         if check_response.status_code == 200:

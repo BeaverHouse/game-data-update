@@ -17,7 +17,7 @@ def make_dic_factory(cursor):
     return create_row
 
 def upload_party_data(season: str, target_boss: int) -> dict:
-    raid_id = f"{season}{'-' + str(target_boss) if target_boss != 0 else ''}"
+    raid_id = f"{season}-{target_boss}"
     print(f"Uploading party data for {raid_id}...")
 
     scores = get_party_info(season, target_boss)        
@@ -53,7 +53,7 @@ def upload_party_data(season: str, target_boss: int) -> dict:
 
 
 def upload_summary(season: str, target_boss: int) -> dict:
-    raid_id = f"{season}{'-' + str(target_boss) if target_boss != 0 else ''}"
+    raid_id = f"{season}-{target_boss}"
     print(f"Uploading summary for {raid_id}...")
 
     party_data = get_party_info(season, target_boss)

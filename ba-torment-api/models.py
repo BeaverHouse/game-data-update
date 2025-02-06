@@ -5,7 +5,7 @@ from typing import Optional
 class RaidInfo(BaseModel):
     id: str
     description: str
-    is_lunatic: bool
+    top_level: str
 
 class YoutubeLinkInfo(BaseModel):
     user_id: int

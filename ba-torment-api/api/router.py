@@ -31,11 +31,11 @@ async def get_ranks() -> list[RaidInfo]:
     table_name = "ba_torment.raids"
     with get_postgres() as conn:
         cur = conn.cursor()
-        cur.execute(f"SELECT raid_id, name, is_lunatic FROM {table_name} WHERE status = 'COMPLETE' and is_lunatic = false ORDER BY created_at ASC")
+        cur.execute(f"SELECT raid_id, name FROM {table_name} WHERE status = 'COMPLETE' and is_lunatic IS NULL ORDER BY created_at ASC")
         ranks = cur.fetchall()
 
     logger.warn(f"v1 raid API called")
-    return list(map(lambda x: RaidInfo(id=x[0], description=x[1], is_lunatic=x[2]), ranks))
+    return list(map(lambda x: RaidInfo(id=x[0], description=x[1], top_level="T"), ranks))
 
 @api_router.get("/v2/raids")
 async def get_v2_ranks() -> list[RaidInfo]:
@@ -43,7 +43,7 @@ async def get_v2_ranks() -> list[RaidInfo]:
     with get_postgres() as conn:
 
         cur = conn.cursor()
-        cur.execute(f"SELECT raid_id, name, is_lunatic FROM {table_name} WHERE status = 'COMPLETE' and is_lunatic = true ORDER BY created_at ASC")
+        cur.execute(f"SELECT raid_id, name, top_level FROM {table_name} WHERE status = 'COMPLETE' ORDER BY created_at ASC")
         ranks = cur.fetchall()
 
     return list(map(lambda x: RaidInfo(id=x[0], description=x[1], is_lunatic=x[2]), ranks))

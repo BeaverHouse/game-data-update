@@ -31,7 +31,7 @@ async def get_ranks() -> list[RaidInfo]:
     table_name = "ba_torment.raids"
     with get_postgres() as conn:
         cur = conn.cursor()
-        cur.execute(f"SELECT raid_id, name, is_lunatic FROM {table_name} WHERE status = 'COMPLETE' ORDER BY created_at ASC")
+        cur.execute(f"SELECT raid_id, name, is_lunatic FROM {table_name} WHERE status = 'COMPLETE' and is_lunatic = false ORDER BY created_at ASC")
         ranks = cur.fetchall()
 
     logger.warn(f"v1 raid API called")

@@ -3,6 +3,7 @@ import os
 import requests
 
 from fastapi.responses import RedirectResponse
+from urllib.parse import urlparse
 
 from ..utils.database import get_postgres
 from ..utils.youtube import parse_youtube_embed_link
@@ -12,6 +13,9 @@ from ..log.logger import logger
 api_router = APIRouter(tags=["BA torment"])
 
 file_url = os.getenv("BATORMENT_DOWNLOAD_URL")
+parsed_file_url = urlparse(file_url)
+if not parsed_file_url.scheme or not parsed_file_url.netloc:
+    raise ValueError("Invalid base URL for file downloads")
 
 @api_router.get("/")
 async def root():
@@ -99,6 +103,8 @@ async def register_link(link_info: YoutubeLinkInfo):
 
 @api_router.get("/v2/party/{raid_id}")
 async def redirect_to_party_file(raid_id: str):
+    if not raid_id.isalnum():
+        raise HTTPException(status_code=400, detail="Invalid raid_id")
     url = f"{file_url}/v2/party/{raid_id}.json"
     check_response = requests.head(url)
     if check_response.status_code == 200:
@@ -111,6 +117,8 @@ async def redirect_to_party_file(raid_id: str):
 
 @api_router.get("/v2/summary/{raid_id}")
 async def redirect_to_summary_file(raid_id: str):
+    if not raid_id.isalnum():
+        raise HTTPException(status_code=400, detail="Invalid raid_id")
     url = f"{file_url}/v2/summary/{raid_id}.json"
     check_response = requests.head(url)
     if check_response.status_code == 200:

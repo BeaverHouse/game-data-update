@@ -12,13 +12,6 @@ from ..log.logger import logger
 
 api_router = APIRouter(tags=["BA torment"])
 
-file_url = os.getenv("BATORMENT_DOWNLOAD_URL")
-parsed_file_url = urlparse(file_url)
-if not parsed_file_url.scheme or not parsed_file_url.netloc:
-    raise ValueError("Invalid base URL for file downloads")
-
-valid_paths = ["/v2/party/", "/v2/summary/"]
-
 @api_router.get("/")
 async def root():
     return {"message": "BA torment API"}
@@ -103,34 +96,3 @@ async def register_link(link_info: YoutubeLinkInfo):
             conn.commit()
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
-@api_router.get("/v2/party/{raid_id}")
-async def redirect_to_party_file(raid_id: str):
-    if not raid_id.isalnum():
-        raise HTTPException(status_code=400, detail="Invalid raid_id")
-    path = f"/v2/party/{raid_id}.json"
-    if path in valid_paths:
-        url = f"{file_url}{path}"
-        check_response = requests.head(url)
-        if check_response.status_code == 200:
-            return RedirectResponse(url=url)
-        else:
-            raise HTTPException(status_code=404, detail=f"404 error: {raid_id}")
-    else:
-        raise HTTPException(status_code=400, detail="Invalid path")
-
-
-@api_router.get("/v2/summary/{raid_id}")
-async def redirect_to_summary_file(raid_id: str):
-    if not raid_id.isalnum():
-        raise HTTPException(status_code=400, detail="Invalid raid_id")
-    path = f"/v2/summary/{raid_id}.json"
-    if path in valid_paths:
-        url = f"{file_url}{path}"
-        check_response = requests.head(url)
-        if check_response.status_code == 200:
-            return RedirectResponse(url=url)
-        else:
-            raise HTTPException(status_code=404, detail=f"404 error: {raid_id}")
-    else:
-        raise HTTPException(status_code=400, detail="Invalid path")

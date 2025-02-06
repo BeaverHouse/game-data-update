@@ -4,20 +4,21 @@ import sys
 
 import constants
 
-def get_rank_season(season: str) -> Tuple[int, pl.DataFrame]:
+def get_rank_season(season: str, target_boss: int = 0) -> pl.DataFrame:
     """
     Get rank data
 
     Args:
         season (str): season starts with "S" or "3S".
+        target_boss (int): target boss number if it's Grand Assault (대결전).
     """
-    if season.startswith("3S"):
-        return get_rank_season_triple(season)
+    if target_boss != 0:
+        return get_rank_season_triple(season, target_boss)
     else:
         return get_rank_season_normal(season)
 
 
-def get_rank_season_normal(season: str) -> Tuple[int, pl.DataFrame]:
+def get_rank_season_normal(season: str) -> pl.DataFrame:
     """
     Get "Total Assault (총력전)" rank data
     """
@@ -25,18 +26,15 @@ def get_rank_season_normal(season: str) -> Tuple[int, pl.DataFrame]:
     
     try:
         df = pl.read_csv(url, schema=pl.Schema({"Rank": pl.Int64, "BestRankingPoint": pl.Int64, "AccountId": pl.Int64}), truncate_ragged_lines=True)
-        target_boss = 0
-        return target_boss, \
-            df.rename({"AccountId": "USER_ID", "Rank": "FINAL_RANK", "BestRankingPoint": "SCORE"}) \
+        return df.rename({"AccountId": "USER_ID", "Rank": "FINAL_RANK", "BestRankingPoint": "SCORE"}) \
               .unique(keep="first") \
-              .filter(pl.col("SCORE") > constants.TORMENT_MIN_SCORE) \
               .filter(pl.col("FINAL_RANK") <= constants.PLATINUM_CUT) \
               .sort(by="SCORE", descending=True)
     except Exception as e:
         print(e)
         sys.exit(1)
 
-def get_rank_season_triple(season: str) -> Tuple[int, pl.DataFrame]:
+def get_rank_season_triple(season: str, target_boss: int) -> pl.DataFrame:
     """
     Get "Grand Assault (대결전)" rank data
     """
@@ -45,16 +43,9 @@ def get_rank_season_triple(season: str) -> Tuple[int, pl.DataFrame]:
     
     try:
         df = pl.read_csv(url, truncate_ragged_lines=True)
-        target_boss = -1
-        for i in range(1, 4):
-            if df.select(pl.first(f"Boss{i}")).item() > constants.TORMENT_MIN_SCORE:
-                target_boss = i
-                break
-        return target_boss, \
-            df.select(pl.col("AccountId", "Rank", "BestRankingPoint", f"Boss{target_boss}")) \
+        return df.select(pl.col("AccountId", "Rank", "BestRankingPoint", f"Boss{target_boss}")) \
               .rename({"AccountId": "USER_ID", "Rank": "FINAL_RANK", f"Boss{target_boss}": "SCORE"}) \
               .unique(keep="first") \
-              .filter(pl.col("SCORE") > constants.TORMENT_MIN_SCORE) \
               .filter(pl.col("FINAL_RANK") <= constants.PLATINUM_CUT) \
               .sort(by="SCORE", descending=True)
     except Exception as e:

@@ -5,6 +5,7 @@ from typing import Optional
 class RaidInfo(BaseModel):
     id: str
     description: str
+    is_lunatic: bool
 
 class YoutubeLinkInfo(BaseModel):
     user_id: int

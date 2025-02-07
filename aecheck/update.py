@@ -134,10 +134,36 @@ def update_character(character: Character):
 
 if __name__ == "__main__":
     update_character(Character(
-        english_name="Lokido",
-        korean_class_name="테아트랄 베트",
+        english_name="Krervo",
+        korean_class_name=None,
+        style=Style.FOUR.value,
+        altema_url="https://altema.jp/anaden/chara/8",
+        is_original_4star=True
+    ))
+    update_character(Character(
+        english_name="Krervo",
+        korean_class_name="리바이버",
+        style=Style.AS.value,
+        altema_url="https://altema.jp/anaden/chara/1134",
+    ))
+    update_character(Character(
+        english_name="Nonold",
+        korean_class_name=None,
+        style=Style.FOUR.value,
+        altema_url="https://altema.jp/anaden/chara/1135",
+        is_original_4star=True
+    ))
+    update_character(Character(
+        english_name="Nonold",
+        korean_class_name="아마란투스",
         style=Style.NS.value,
-        is_alter=True,
-        alter_character_korean_name="로키드",
-        altema_url="https://altema.jp/anaden/chara/1130",
+        altema_url="https://altema.jp/anaden/chara/1135",
+    ))
+    update_character(Character(
+        english_name="Toova",
+        korean_class_name="지오맨서",
+        style=Style.NS.value,
+        max_manifest=2,
+        alter_character_korean_name="보라 의상의 창술사",
+        altema_url="https://altema.jp/anaden/chara/6",
     ))

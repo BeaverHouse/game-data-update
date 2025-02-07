@@ -52,14 +52,18 @@ def upload_party_data(season: str, target_boss: int) -> dict:
     })
 
 
-def upload_summary(season: str, target_boss: int) -> dict:
+def upload_summary(season: str, target_boss: int, top_level: str) -> dict:
     raid_id = f"{season}-{target_boss}"
     print(f"Uploading summary for {raid_id}...")
 
     party_data = get_party_info(season, target_boss)
-    torment_party_data = list(filter(lambda x: x['SCORE'] < constants.LUNATIC_MIN_SCORE and x['SCORE'] >= constants.TORMENT_MIN_SCORE, party_data))
+    if top_level == "L":
+        torment_party_data = list(filter(lambda x: x['LEVEL'] == "T", party_data))
+        lunatic_party_data = list(filter(lambda x: x['LEVEL'] == "L", party_data))
+    else:
+        torment_party_data = list(filter(lambda x: x['LEVEL'] == top_level, party_data))
+        lunatic_party_data = []
     torment_data = process_summary(torment_party_data)
-    lunatic_party_data = list(filter(lambda x: x['SCORE'] >= constants.LUNATIC_MIN_SCORE, party_data))
     lunatic_data = process_summary(lunatic_party_data)
 
     data = {

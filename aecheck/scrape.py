@@ -116,7 +116,7 @@ def get_dungeon_from_aewiki(style: Style, english_class_name: str):
             if "(VH)" in txt and not txt.startswith("Obtained"):
                 return str(txt).split("(")[0].strip()
             
-        raise Exception("Dungeon not found")
+        return "In-game"
 
 
 

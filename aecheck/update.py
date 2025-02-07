@@ -59,7 +59,7 @@ def update_character(character: Character):
                 )
 
             for personality in personalities:
-                cur.execute(f"SELECT key FROM aecheck.translations WHERE en = '{personality}'")
+                cur.execute(f"SELECT key FROM aecheck.translations WHERE en = '{personality.replace('*', '')}'")
                 data = cur.fetchone()
                 if data is None:
                     print(f"Personality {personality} not found")
